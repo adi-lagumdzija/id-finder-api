@@ -2,26 +2,25 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware to parse JSON
 app.use(express.json());
 
-app.post('/find/:id', (req, res) => {
-  const { id } = req.params;
-  const jsonData = req.body;
+app.post('/find/:app_id', (req, res) => {
+  const { app_id } = req.params;
+  const { appointmentDetails } = req.body;
 
-  if (!Array.isArray(jsonData)) {
-    return res.status(400).json({ error: 'Request body must be a JSON array' });
+  if (!Array.isArray(appointmentDetails)) {
+    return res.status(400).json({ error: 'appointmentDetails must be an array' });
   }
 
-  const index = jsonData.findIndex(item => item.id == id);
+  const index = appointmentDetails.findIndex(item => item.app_id === app_id);
 
   if (index === -1) {
-    return res.status(404).json({ message: `ID ${id} not found` });
+    return res.status(404).json({ message: `app_id ${app_id} not found` });
   }
 
-  return res.json({ index });
+  return res.json({ index, matchedItem: appointmentDetails[index] });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
